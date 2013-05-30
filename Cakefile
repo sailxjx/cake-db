@@ -1,0 +1,1 @@
+require('./src/cake-db').tasks()

@@ -1,0 +1,10 @@
+{
+    "name": "cake-db",
+    "description": "A database migrate module with cake task",
+    "main": "lib/cake-db.js",
+    "version": "0.0.1",
+    "private": false,
+    "dependencies": {
+        "mysql": "2.x"
+    }
+}
