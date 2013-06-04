@@ -13,4 +13,4 @@ module.exports = (key, file)->
   if file? and configs[file]?
     return configs[file][key]
   else
-    return mergeConfigs[key]  
+    return mergeConfigs[key]

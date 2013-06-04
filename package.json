@@ -5,6 +5,8 @@
     "version": "0.0.1",
     "private": false,
     "dependencies": {
-        "mysql": "2.x"
+        "mysql": "2.x",
+        "async": "0.2.x",
+        "colors": "0.6.x"
     }
 }

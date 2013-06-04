@@ -1,9 +1,24 @@
 {
-    "dev": {
+    "development": {
         "adapter": "mysql",
         "database": "sayhello",
-        "username": "root",
+        "user": "root",
         "password": "",
         "host": "127.0.0.1"
-    }
+    },
+    "test": {
+        "adapter": "mysql",
+        "database": "sayhello",
+        "user": "test",
+        "password": "test",
+        "host": "127.0.0.1"
+    },
+    "production": {
+        "adapter": "mysql",
+        "database": "sayhello",
+        "user": "production",
+        "password": "production",
+        "host": "127.0.0.1"
+    },
+    "db_env": "development"
 }
