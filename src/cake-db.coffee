@@ -5,7 +5,10 @@ global.__basepath = fs.realpathSync('.')
 run = (taskName, options)->
   taskPath = taskName.replace(/:/g, '/')
   try
-    return require("./tasks/#{taskPath}")(options)
+    task = require("./tasks/#{taskPath}")
+    if options.help && task.help?
+      return task.help()
+    return task.main(options)
   catch e
     throw e
 
@@ -13,10 +16,12 @@ tasks =
   'db:migrate': 'migrate the database'
   'db:migrate:create': 'create a migrate file'
   'db:migrate:status': 'display status of migrations'
+  'db:rollback': 'rollback the post migrations'
 
 exports.tasks = ->
   option '-h', '--help', 'show helps'
   option '-n', '--name [name]', 'set the migrate file name'
+  option '-v', '--version [version]', 'set rollback version'
 
   for key of tasks
     task key, tasks[key], (options)->

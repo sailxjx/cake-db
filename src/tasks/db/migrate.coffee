@@ -8,11 +8,12 @@ calledSteps = []
 
 buildQuery =
   create: (data)->
-    query = "CREATE TABLE `#{data.table}` (" + @getFields(data.fields) + ", PRIMARY KEY (`id`))
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    query = "CREATE TABLE `#{data.table}` (" + @getFields(data) + ", PRIMARY KEY (`id`))
+    ENGINE=InnoDB DEFAULT CHARSET=utf8" + @getComment(data) + ";"
     return query
-  getFields: (fields)->
-    fieldArr = ["`id` int(10) unsigned NOT NULL COMMENT 'identify'"]
+  getFields: (data)->
+    fields = data.fields
+    fieldArr = ["`id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'identify'"]
     for name of fields
       type = ""
       comment = ""
@@ -23,7 +24,12 @@ buildQuery =
         else type = fields[name][0]
       comment = if fields[name][1] then fields[name][1] else name
       fieldArr.push("`#{name}` #{type} COMMENT '#{comment}'")
+    if data.timestamps
+      fieldArr.push("`create_time` datetime NOT NULL")
+      fieldArr.push("`update_time` datetime NOT NULL")
     return fieldArr.join(',')
+  getComment: (data)->
+    return if data.comment? then " COMMENT '#{data.comment}' " else ""
 
 mixFoos =
   createTable: (table, data, callback)->
@@ -34,9 +40,8 @@ mixFoos =
       ),
       ((conn, next)->
         query = buildQuery.create(data)
-        console.log new Array(40).join('-')
-        console.log "create table #{table}".grey
-        console.log "query -> #{query}".grey
+        console.log "create table #{table}"
+        console.log "query -> #{query}"
         conn.query query, next
       )
     ], (err, result)->
@@ -51,9 +56,9 @@ mixFoos =
         db.loadDb next
       ),
       ((conn, next)->
-        console.log "log schema".grey
+        console.log "log schema"
         query = "INSERT INTO `schema_migrations` (version) VALUES (#{version})"
-        console.log "query -> #{query}".grey
+        console.log "query -> #{query}"
         conn.query query, next
       )
     ], (err, result)->
@@ -64,8 +69,8 @@ mixin = (migrate)->
     migrate[foo] = mixFoos[foo] until migrate[foo]?
   return migrate
 
-module.exports = (options)->
-  console.log 'begin migrate'.grey
+exports.main = (options)->
+  console.log 'begin migrate'
   tPath = "#{global.__basepath}/db/migrate"
   fs.readdir tPath, (err, fileList)->
     throw err.red if err?
@@ -76,19 +81,20 @@ module.exports = (options)->
         if version in schema
           next()
         else
+          console.log new Array(60).join('-')
           migrate = require("#{tPath}/#{file}")
           mixin(migrate)
           if typeof migrate.change == 'function'
             migrate.change (err, result)->
               if err?
+                console.log err.toString().red
                 migrate.rollback(next)
               else
                 migrate.logSchema version, (err)->
-                  console.log "finish migrate #{file}".grey
+                  console.log "finish migrate #{file}".green
                   next(err)
           else
             next("#{file} has no function change!")
         ), (err)->
-        console.log err.red if err?
-        console.log 'finish migrate'.grey
+        if err? then console.log err.toString().red else console.log 'finish migrate'.green
         process.exit()

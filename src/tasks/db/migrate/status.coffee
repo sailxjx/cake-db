@@ -3,13 +3,13 @@ fs = require('fs')
 db = require('../../../db')
 async = require('async')
 
-module.exports = (options)->
+exports.main = (options)->
   tPath = "#{global.__basepath}/db/migrate"
   fs.readdir tPath, (err, fileList)->
     throw err if err?
     fileList.sort()
     console.log "Status\t\tMigration ID\t\tMigration Name"
-    console.log new Array(80).join('-')
+    console.log new Array(60).join('-')
     db.loadSchema (err, schema)->
       async.each fileList, ((file, next)->
         [version] = file.split('_')

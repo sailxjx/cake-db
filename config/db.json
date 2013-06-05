@@ -1,23 +1,23 @@
 {
     "development": {
         "adapter": "mysql",
-        "database": "sayhello",
+        "database": "cakedb",
         "user": "root",
         "password": "",
         "host": "127.0.0.1"
     },
     "test": {
         "adapter": "mysql",
-        "database": "sayhello",
-        "user": "test",
-        "password": "test",
+        "database": "cakedb_test",
+        "user": "root",
+        "password": "",
         "host": "127.0.0.1"
     },
     "production": {
         "adapter": "mysql",
-        "database": "sayhello",
-        "user": "production",
-        "password": "production",
+        "database": "cakedb_production",
+        "user": "root",
+        "password": "",
         "host": "127.0.0.1"
     },
     "db_env": "development"
