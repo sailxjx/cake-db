@@ -8,4 +8,4 @@ exports.change = (callback)->
       message: ['text', '消息']
     timestamps: true
     comment: '聊天记录表'
-  @createTable('chat_history', data, callback)
+  return callback ['createTable', data]
