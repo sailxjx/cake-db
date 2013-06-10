@@ -1,4 +1,4 @@
-exports.change = (callback)->
+exports.change = (callback) ->
   data =
     table: "chat_history"
     fields:

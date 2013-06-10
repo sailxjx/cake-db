@@ -3,7 +3,7 @@ crypto = require('crypto')
 config = require('./config')
 conn = null
 
-exports.loadDb = (callback)->
+exports.loadDb = (callback) ->
   if conn?
     callback(null, conn)
   else
@@ -12,9 +12,9 @@ exports.loadDb = (callback)->
       connName = dbConfig.database
       delete dbConfig.database
       conn = mysql.createConnection(dbConfig)
-      conn.query "CREATE DATABASE IF NOT EXISTS #{connName}", (err, result)->
+      conn.query "CREATE DATABASE IF NOT EXISTS #{connName}", (err, result) ->
         throw err if err?
-        conn.query "USE #{connName}", (err, result)->
+        conn.query "USE #{connName}", (err, result) ->
           throw err if err?
           callback(null, conn)
     else
@@ -22,15 +22,15 @@ exports.loadDb = (callback)->
       callback(null, conn)
     return true
 
-exports.loadSchema = (callback)->
+exports.loadSchema = (callback) ->
   loadSchema = ->
-    conn.query "SELECT version FROM schema_migrations", (err, result)->
+    conn.query "SELECT version FROM schema_migrations", (err, result) ->
       if err? and err.code == 'ER_NO_SUCH_TABLE'
         conn.query "CREATE TABLE `schema_migrations` (
                       `version` varchar(255) NOT NULL DEFAULT '' COMMENT 'version',
                       PRIMARY KEY (`version`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='schema_migrations'",
-          (err, result)->
+          (err, result) ->
             callback(err, [])
       else
         schema = []

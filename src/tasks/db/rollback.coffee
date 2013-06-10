@@ -9,7 +9,7 @@ exports.help = ->
   console.log "  cake -v 1 db:rollback"
   console.log "  cake -v 20130530093101810 db:rollback"
 
-exports.main = (options)->
+exports.main = (options) ->
   version = if options.version? then options.version else 1
   rollType = 0
   tPath = "#{global.__basepath}/db/migrate"
@@ -22,13 +22,13 @@ exports.main = (options)->
   else
     rollType = 0
     console.log "rollback last #{version} versions"
-  fs.readdir tPath, (err, fileList)->
+  fs.readdir tPath, (err, fileList) ->
     throw err if err?
     fileHash = {}
     for file in fileList
       [v] = file.split('_')
       fileHash[v] = file
-    db.loadSchema (err, schema)->
+    db.loadSchema (err, schema) ->
       throw err if err?
       rollVersions = []
       if rollType == 1
@@ -38,7 +38,7 @@ exports.main = (options)->
             break
       else
         rollVersions = schema.reverse().splice(0, version)
-      async.eachSeries rollVersions, ((version, next)->
+      async.eachSeries rollVersions, ((version, next) ->
         console.log new Array(60).join('-')
         console.log "rollback version #{version}"
         if fileHash[version]?
@@ -46,18 +46,18 @@ exports.main = (options)->
           if typeof task.change == 'function'
             mig = new Migrate()
             task.change ->
-              async.eachSeries arguments, ((action, _next)->
+              async.eachSeries arguments, ((action, _next) ->
                 mig.register(version, action)
                 _next()
-                ), (err)->
+                ), (err) ->
                 return next(err) if err?
-                mig.rollback (_err)->
+                mig.rollback (_err) ->
                   return next(_err) if _err?
                   mig.delSchema version, next  # delete schema after successful rollback
           else
             next('migration file has no change function')
         else
           next('could not find migration file')
-        ), (err)->
+        ), (err) ->
         if err? then console.log err.toString().red else console.log 'rollback finish'.green
         process.exit()

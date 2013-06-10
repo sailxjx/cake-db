@@ -2,7 +2,7 @@ path = require('path')
 fs = require('fs')
 global.__basepath = fs.realpathSync('.')
 
-run = (taskName, options)->
+run = (taskName, options) ->
   taskPath = taskName.replace(/:/g, '/')
   try
     task = require("./tasks/#{taskPath}")
@@ -17,6 +17,7 @@ tasks =
   'db:migrate:create': 'create a migrate file'
   'db:migrate:status': 'display status of migrations'
   'db:rollback': 'rollback the post migrations'
+  'db:structure:dump': 'dump the database structure'
 
 exports.tasks = ->
   option '-h', '--help', 'show helps'
@@ -24,6 +25,6 @@ exports.tasks = ->
   option '-v', '--version [version]', 'set rollback version'
 
   for key of tasks
-    task key, tasks[key], (options)->
+    task key, tasks[key], (options) ->
       for taskName in options.arguments
         run(taskName, options)

@@ -9,7 +9,7 @@ mergeConfigs = {}
       mergeConfigs[kk] = configs[k][kk]
   )()
 
-module.exports = (key, file)->
+module.exports = (key, file) ->
   if file? and configs[file]?
     return configs[file][key]
   else
