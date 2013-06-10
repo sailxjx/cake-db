@@ -17,7 +17,7 @@ module.exports =
         return "ADD #{r}"
     query = "ALTER TABLE `#{data.table}` " + columns.join(',')
 
-  delColumn: (data) ->
+  dropColumn: (data) ->
     query = "ALTER TABLE #{data.table} " + Object.keys(data.fields).map((field) -> "DROP `#{field}`").join(',')
 
   getFields: (data) ->

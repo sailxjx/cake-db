@@ -60,9 +60,9 @@ module.exports = class Migrate
       callback(err, result)
 
   rollAddColumn: (data, callback) ->
-    @delColumn(data, callback)
+    @dropColumn(data, callback)
 
-  delColumn: (data, callback) ->
+  dropColumn: (data, callback) ->
     return callback('missing table name') until data.table?
     table = data.table
     async.waterfall [
@@ -70,7 +70,7 @@ module.exports = class Migrate
         db.loadDb next
         ),
       ((conn, next) ->
-        query = queryBuilder.delColumn(data);
+        query = queryBuilder.dropColumn(data);
         console.log "query -> #{query}"
         conn.query query, next
         )

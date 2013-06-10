@@ -11,4 +11,6 @@ A database migrate module with cake task
 
 ## actions
 * createTable
-* deleteTable
+* dropTable
+* addColumn
+* dropColumn
