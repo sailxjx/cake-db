@@ -18,10 +18,7 @@ module.exports =
     query = "ALTER TABLE `#{data.table}` " + columns.join(',')
 
   delColumn: (data) ->
-    deleteFields = []
-    for field of data.fields
-      deleteFields.push("DROP #{field}")
-    query = "ALTER TABLE #{data.table} " + deleteFields.join(',')
+    query = "ALTER TABLE #{data.table} " + Object.keys(data.fields).map((field) -> "DROP `#{field}`").join(',')
 
   getFields: (data) ->
     fields = data.fields
