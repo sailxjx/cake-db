@@ -11,6 +11,6 @@ A database migrate module with cake task
 
 ## actions
 * createTable
-* dropTable
+* dropTable (need self defined rollback function)
 * addColumn
-* dropColumn
+* dropColumn (need self defined rollback function)

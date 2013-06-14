@@ -85,7 +85,7 @@ module.exports = class Migrate
       conn.query query, callback
 
   rollback: (callback) ->
-    if @task.rollback == 'function'
+    if typeof @task.rollback == 'function'
       @task.rollback =>
         async.eachSeries arguments, ((action, next) =>
           func = @[action[0]]

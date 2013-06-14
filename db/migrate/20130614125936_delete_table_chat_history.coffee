@@ -1,5 +1,7 @@
 exports.change = (callback) ->
-  return callback ['dropTable', 'chat_history']
+  data =
+    table: 'chat_history'
+  return callback ['dropTable', data]
 
 exports.rollback = (callback) ->
   data =
