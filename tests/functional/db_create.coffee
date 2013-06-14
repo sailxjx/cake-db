@@ -1,5 +1,6 @@
-config = require('../../config/db')
 db = require('../../src/db')
-console.log config.development
-db config.development, ()->
-console.log config.development
+db.loadDb (err, conn) ->
+  conn.query 'START TRANSACTION'
+  conn.query "INSERT INTO chat_history(`roomm`) VALUES ('fasdfasdf')", (err, result) ->
+    console.log err
+    console.log result

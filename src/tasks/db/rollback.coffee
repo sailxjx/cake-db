@@ -43,21 +43,11 @@ exports.main = (options) ->
         console.log "rollback version #{version}"
         if fileHash[version]?
           task = require("#{tPath}/#{fileHash[version]}")
-          if typeof task.change == 'function'
-            mig = new Migrate()
-            task.change ->
-              async.eachSeries arguments, ((action, _next) ->
-                mig.register(version, action)
-                _next()
-                ), (err) ->
-                return next(err) if err?
-                mig.rollback (_err) ->
-                  return next(_err) if _err?
-                  mig.delSchema version, next  # delete schema after successful rollback
-          else
-            next('migration file has no change function')
-        else
-          next('could not find migration file')
+          mig = new Migrate(version, task)
+          task.change ->
+            for action in arguments
+              mig.register(action)
+            mig.rollback next
         ), (err) ->
         if err? then console.log err.toString().red else console.log 'rollback finish'.green
         process.exit()

@@ -1,63 +1,65 @@
 async = require('async')
 db = require('../db')
 queryBuilder = require('../query-builder')
+async = require('async')
 
 module.exports = class Migrate
-  constructor: ->
-    @calledSteps = {}
+  constructor: (version, task) ->
+    @calledSteps = []
+    @version = version
+    @task = task
 
-  register: (version, action) ->
-    @calledSteps[version] = [] until @calledSteps[version]?
-    @calledSteps[version].unshift action
+  start: (callback) ->
+    if typeof @task.change == 'function'
+      @task.change =>
+        async.eachSeries arguments, ((action, next) =>
+          func = @[action[0]]
+          if typeof func == 'function'
+            func action[1], (err, result) =>
+              return next(err) if err?
+              @register(action)  # register every success action for further rollback
+              next()
+          else
+            next("no function called #{func}")
+          ), (err) =>
+          if err?
+            @rollback (_err) ->
+              callback(err)
+          else
+            @addSchema callback  # add schema after every successful migrate
+    else
+      callback("no change function!")
+
+  register: (action) ->
+    @calledSteps.unshift action
     return @
 
   createTable: (data, callback) ->
     return callback('missing table name') until data.table?
     table = data.table
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-      ),
-      ((conn, next) ->
-        query = queryBuilder.createTable(data)
-        console.log "query -> #{query}"
-        conn.query query, next
-      )
-    ], (err, result) ->
-      callback(err, result)
+    db.loadDb (err, conn) ->
+      query = queryBuilder.createTable(data)
+      console.log "query -> #{query}"
+      conn.query query, callback
 
   rollCreateTable: (data, callback) ->
-    @dropTable(data, callback)      
+    @dropTable(data, callback)
 
   dropTable: (data, callback) ->
     return callback('missing table name') until data.table?
     table = data.table
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-        ),
-      ((conn, next) ->
-        query = queryBuilder.dropTable(data)
-        console.log "query -> #{query}"
-        conn.query query, next
-        )
-    ], (err, result) ->
-      callback(err, result)
+    db.loadDb (err, conn) ->
+      query = queryBuilder.dropTable(data)
+      console.log "query -> #{query}"
+      conn.query query, callback
 
   addColumn: (data, callback) ->
     return callback('missing table name') until data.table?
     table = data.table
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-        ),
-      ((conn, next) ->
-        query = queryBuilder.addColumn(data);
-        console.log "query -> #{query}"
-        conn.query query, next
-        )
-    ], (err, result) ->
-      callback(err, result)
+    db.loadDb (err, conn) ->
+      query = queryBuilder.addColumn(data);
+      console.log "query -> #{query}"
+      conn.query query, callback
 
   rollAddColumn: (data, callback) ->
     @dropColumn(data, callback)
@@ -65,59 +67,45 @@ module.exports = class Migrate
   dropColumn: (data, callback) ->
     return callback('missing table name') until data.table?
     table = data.table
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-        ),
-      ((conn, next) ->
-        query = queryBuilder.dropColumn(data);
-        console.log "query -> #{query}"
-        conn.query query, next
-        )
-    ], (err, result) ->
-      callback(err, result)
+    db.loadDb (err, conn) ->
+      query = queryBuilder.dropColumn(data);
+      console.log "query -> #{query}"
+      conn.query query, callback
 
-  addSchema: (version, callback) ->
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-      ),
-      ((conn, next) ->
-        console.log "add schema"
-        query = "INSERT INTO `schema_migrations` (version) VALUES (#{version})"
-        console.log "query -> #{query}"
-        conn.query query, next
-      )
-    ], (err, result) ->
-      callback(err, result)
+  addSchema: (callback) ->
+    db.loadDb (err, conn) =>
+      query = "INSERT INTO `schema_migrations` (version) VALUES (#{@version})"
+      console.log "query -> #{query}"
+      conn.query query, callback
 
-  delSchema: (version, callback) ->
-    async.waterfall [
-      ((next) ->
-        db.loadDb next
-      ),
-      ((conn, next) ->
-        console.log 'del schema'
-        query = "DELETE FROM `schema_migrations` WHERE `version` = '#{version}'"
-        console.log "query -> #{query}"
-        conn.query query, next
-      )
-    ], (err, result) ->
-      callback(err, result)
+  delSchema: (callback) ->
+    db.loadDb (err, conn) =>
+      query = "DELETE FROM `schema_migrations` WHERE `version` = '#{@version}'"
+      console.log "query -> #{query}"
+      conn.query query, callback
 
   rollback: (callback) ->
-    console.log 'rollback -> ' + JSON.stringify(@calledSteps)
-    iterator = []
-    for version of @calledSteps
-      iterator.push(version)
-    async.eachSeries iterator, ((version, next)=>
-      async.eachSeries @calledSteps[version], ((action, _next)=>
+    if @task.rollback == 'function'
+      @task.rollback =>
+        async.eachSeries arguments, ((action, next) =>
+          func = @[action[0]]
+          if typeof func == 'function'
+            func action[1], (err, result) =>
+              return next(err) if err?
+              next()
+          else
+            next("no function called #{func}")
+          ), (err) =>
+          return callback(err) if err?
+          @delSchema callback
+    else
+      console.log 'rollback -> ' + JSON.stringify(@calledSteps)
+      async.eachSeries @calledSteps, ((action, next) =>
         roll = 'roll' + action[0][0].toUpperCase() + action[0][1..]
         if typeof @[roll] == 'function'
-          @[roll] action[1], _next
+          @[roll] action[1], next
         else
-          _next("could not find rollback function #{roll}")
-        ), (_err) ->
-        next(_err)
-      ), (err) ->
-      callback(err)
+          next("could not find rollback function #{roll}")
+        ), (err) =>
+        return callback(err) if err?
+        @delSchema callback

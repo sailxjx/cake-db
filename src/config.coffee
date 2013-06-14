@@ -1,3 +1,5 @@
+global.__basepath = global.__basepath || '..'
+
 configs =
   db: require("#{global.__basepath}/config/db")
 
