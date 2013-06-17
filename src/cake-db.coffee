@@ -16,9 +16,7 @@ tasks =
   'db:migrate': 'migrate the database'
   'db:migrate:new': 'create a new migrate file'
   'db:migrate:status': 'display status of migrations'
-  'db:schema:dump': "create a db/schema/version.json to store each table's readable schema"
   'db:rollback': 'rollback the post migrations'
-  'db:structure:dump': 'dump the database structure'
 
 exports.tasks = ->
   option '-h', '--help', 'show helps'
