@@ -1,0 +1,61 @@
+/*
+Syntax error: Undefined variable: "$font_main".
+        on line 3 of src/scss/_index/layout.scss
+
+1: body {
+2:     font-size: 12px;
+3:     font-family: $font_main;
+4: }
+5: 
+6: #container {
+7:     width: 1200px;
+8:     margin: 0 auto;
+
+Backtrace:
+src/scss/_index/layout.scss:3
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/script/variable.rb:49:in `_perform'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/script/node.rb:40:in `perform'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:298:in `visit_prop'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:100:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `map'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:109:in `block in visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:121:in `with_environment'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:108:in `visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:320:in `visit_rule'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:100:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `map'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:109:in `block in visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:121:in `with_environment'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:108:in `visit_children'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:128:in `visit_root'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:100:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/visitors/perform.rb:7:in `visit'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/tree/root_node.rb:20:in `render'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/engine.rb:315:in `_render'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/engine.rb:262:in `render'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/plugin/compiler.rb:341:in `update_stylesheet'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/plugin/compiler.rb:203:in `block in update_stylesheets'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/plugin/compiler.rb:201:in `each'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/plugin/compiler.rb:201:in `update_stylesheets'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/plugin.rb:81:in `update_stylesheets'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/exec.rb:425:in `watch_or_update'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/exec.rb:307:in `process_result'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/exec.rb:41:in `parse'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/lib/sass/exec.rb:21:in `parse!'
+/usr/local/ruby/lib/ruby/gems/1.9.1/gems/sass-3.2.7/bin/scss:9:in `<top (required)>'
+/usr/bin/scss:23:in `load'
+/usr/bin/scss:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined variable: \"$font_main\".\A         on line 3 of src/scss/_index/layout.scss\A \A 1: body {\A 2:     font-size: 12px;\A 3:     font-family: $font_main;\A 4: }\A 5: \A 6: #container {\A 7:     width: 1200px;\A 8:     margin: 0 auto;"; }
