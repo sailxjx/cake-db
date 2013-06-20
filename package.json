@@ -13,5 +13,6 @@
     "async": "0.2.x",
     "colors": "0.6.x",
     "moment": "2.x"
-  }
+  },
+  "license": "MIT (sailxjx.mit-license.org)"
 }
