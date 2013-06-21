@@ -2,7 +2,7 @@
   "name": "cake-db",
   "description": "A database migrate module with cake task",
   "main": "lib/cake-db.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "repository": {
     "type": "git",
