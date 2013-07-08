@@ -15,7 +15,7 @@ module.exports = class Migrate
         async.eachSeries arguments, ((action, next) =>
           func = @[action[0]]
           if typeof func == 'function'
-            func action[1], (err, result) =>
+            func.call @, action[1], (err, result) =>
               return next(err) if err?
               @register(action)  # register every success action for further rollback
               next()
@@ -32,57 +32,42 @@ module.exports = class Migrate
 
   register: (action) ->
     @calledSteps.unshift action
-    return @
+    return this
+
+  query: (query, callback) ->
+    db.loadDb (err, conn) ->
+      console.log "query -> #{query}"
+      conn.query query, callback
 
   createTable: (data, callback) ->
     return callback('missing table name') until data.table?
-    table = data.table
-    db.loadDb (err, conn) ->
-      query = queryBuilder.createTable(data)
-      console.log "query -> #{query}"
-      conn.query query, callback
+    @query queryBuilder.createTable(data), callback
 
   rollCreateTable: (data, callback) ->
     @dropTable(data, callback)
 
   dropTable: (data, callback) ->
     return callback('missing table name') until data.table?
-    table = data.table
-    db.loadDb (err, conn) ->
-      query = queryBuilder.dropTable(data)
-      console.log "query -> #{query}"
-      conn.query query, callback
+    @query queryBuilder.dropTable(data), callback
 
   addColumn: (data, callback) ->
     return callback('missing table name') until data.table?
-    table = data.table
-    db.loadDb (err, conn) ->
-      query = queryBuilder.addColumn(data);
-      console.log "query -> #{query}"
-      conn.query query, callback
+    @query queryBuilder.addColumn(data), callback
 
   rollAddColumn: (data, callback) ->
     @dropColumn(data, callback)
 
   dropColumn: (data, callback) ->
     return callback('missing table name') until data.table?
-    table = data.table
-    db.loadDb (err, conn) ->
-      query = queryBuilder.dropColumn(data);
-      console.log "query -> #{query}"
-      conn.query query, callback
+    @query queryBuilder.dropColumn(data), callback;
 
   addSchema: (callback) ->
-    db.loadDb (err, conn) =>
-      query = "INSERT INTO `schema_migrations` (version) VALUES (#{@version})"
-      console.log "query -> #{query}"
-      conn.query query, callback
+    query = "INSERT INTO `schema_migrations` (version) VALUES (#{@version})"
+    @query query, callback
 
   delSchema: (callback) ->
-    db.loadDb (err, conn) =>
-      query = "DELETE FROM `schema_migrations` WHERE `version` = '#{@version}'"
-      console.log "query -> #{query}"
-      conn.query query, callback
+    query = "DELETE FROM `schema_migrations` WHERE `version` = '#{@version}'"
+    @query query, callback
 
   rollback: (callback) ->
     if typeof @task.rollback == 'function'

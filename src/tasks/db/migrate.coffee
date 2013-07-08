@@ -5,7 +5,7 @@ db = require('../../db')
 Migrate = require('../../modules/migrate')
 
 exports.main = (options) ->
-  console.log 'migrate start'
+  console.log 'migrating...'
   tPath = "#{global.__basepath}/db/migrate"
   fs.readdir tPath, (err, fileList) ->
     throw err.red if err?
@@ -19,7 +19,6 @@ exports.main = (options) ->
           console.log new Array(60).join('-')
           console.log "migrate file #{file}"
           task = require("#{tPath}/#{file}")
-
           mig = new Migrate(version, task)
           mig.start next
         ), (err) ->

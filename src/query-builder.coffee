@@ -5,11 +5,11 @@ module.exports =
       "ENGINE=InnoDB DEFAULT CHARSET=utf8" + @getComment(data) + ";"
 
   dropTable: (data) ->
-    query = "DROP TABLE `#{data.table}`";
+    query = "DROP TABLE `#{data.table}`"
 
   addColumn: (data) ->
     columns = @getFields(data)
-    if data.after? 
+    if data.after?
       columns = columns.reverse().map (r) ->
         return "ADD #{r} AFTER `#{data.after}`"
     else

@@ -1,29 +1,26 @@
 mysql = require('mysql')
-crypto = require('crypto')
 config = require('./config')
 conn = null
 
 exports.loadDb = (callback) ->
-  if conn?
-    callback(null, conn)
-  else
-    dbConfig = config(config('db_env', 'db'), 'db')
-    if dbConfig.database?
-      connName = dbConfig.database
-      delete dbConfig.database
-      conn = mysql.createConnection(dbConfig)
-      conn.query "CREATE DATABASE IF NOT EXISTS #{connName}", (err, result) ->
+  return callback(null, conn) if conn?
+  dbConfig = config(config('db_env', 'db'), 'db')
+  if dbConfig.database?
+    connName = dbConfig.database
+    delete dbConfig.database
+    conn = mysql.createConnection(dbConfig)
+    conn.query "CREATE DATABASE IF NOT EXISTS #{connName}", (err, result) ->
+      throw err if err?
+      conn.query "USE #{connName}", (err, result) ->
         throw err if err?
-        conn.query "USE #{connName}", (err, result) ->
-          throw err if err?
-          callback(null, conn)
-    else
-      conn = mysql.createConnection(dbConfig)
-      callback(null, conn)
-    return true
+        dbConfig.database = connName
+        callback(null, conn)
+  else
+    conn = mysql.createConnection(dbConfig)
+    callback(null, conn)
 
 exports.loadSchema = (callback) ->
-  loadSchema = ->
+  @loadDb ->
     conn.query "SELECT version FROM schema_migrations", (err, result) ->
       if err? and err.code == 'ER_NO_SUCH_TABLE'
         conn.query "CREATE TABLE `schema_migrations` (
@@ -33,12 +30,18 @@ exports.loadSchema = (callback) ->
           (err, result) ->
             callback(err, [])
       else
-        schema = []
-        for row of result
-          schema.push(result[row]['version']) if result[row]['version']?
+        schema = (row['version'] for row in result when row['version']?)
         callback(err, schema.sort())
-  if conn?
-    loadSchema()
-  else
-    @loadDb ->
-      loadSchema()
+
+exports.showTables = (callback) ->
+  @loadDb ->
+    conn.query "SHOW TABLES", (err, result) ->
+      return callback(err) if err?
+      tableNames = (table.Tables_in_cakedb for table in result)
+      callback(err, tableNames)
+
+exports.dumpStructure = (table, callback) ->
+  @loadDb ->
+    conn.query "SHOW CREATE TABLE #{table}", (err, result) ->
+      return callback(err) if err?
+      callback(err, result[0]['Create Table'])
