@@ -2,7 +2,7 @@
   "name": "cake-db",
   "description": "A database migrate module with cake task",
   "main": "lib/cake-db.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "repository": {
     "type": "git",
@@ -14,5 +14,8 @@
     "colors": "0.6.x",
     "moment": "2.x"
   },
-  "license": "MIT (sailxjx.mit-license.org)"
+  "license": {
+    "type": "MIT",
+    "url": "http://sailxjx.mit-license.org"
+  }  
 }
